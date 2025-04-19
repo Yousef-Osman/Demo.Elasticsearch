@@ -1,4 +1,5 @@
 using Demo.Elasticsearch.Configuration;
+using Demo.Elasticsearch.HostedServices;
 using Demo.Elasticsearch.Services;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
@@ -24,7 +25,8 @@ builder.Services.AddSingleton(sp =>
     return new ElasticsearchClient(settings);
 });
 
-builder.Services.AddSingleton<IElasticService, ElasticService>();
+builder.Services.AddScoped(typeof(IElasticService<>), typeof(ElasticService<>));
+builder.Services.AddHostedService<ElasticsearchIndexInitializer>();
 
 
 var app = builder.Build();
