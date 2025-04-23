@@ -2,5 +2,8 @@
 
 public static class Constants
 {
-    public const string ProductsIndex = "products";
+    public static class IndexNames
+    {
+        public const string Products = "products";
+    }
 }
