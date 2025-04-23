@@ -1,7 +1,6 @@
-﻿using Demo.Elasticsearch.Common;
-using Demo.Elasticsearch.DTOs;
+﻿using Demo.Elasticsearch.DTOs;
 using Demo.Elasticsearch.Models;
-using Demo.Elasticsearch.Services;
+using Demo.Elasticsearch.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Elasticsearch.Controllers;
@@ -9,11 +8,11 @@ namespace Demo.Elasticsearch.Controllers;
 [ApiController]
 public class ProductsController : ControllerBase
 {
-    private readonly IElasticService<Product> _elasticService;
+    private readonly IProductService _productService;
 
-    public ProductsController(IElasticService<Product> elasticService)
+    public ProductsController(IProductService productService)
     {
-        _elasticService = elasticService;
+        _productService = productService;
     }
 
     [HttpPost]
@@ -21,8 +20,8 @@ public class ProductsController : ControllerBase
     {
         var product = new Product
         {
-            Id = Guid.NewGuid(),
-            Title = input.Title,
+            Id = input.Id,
+            Name = input.Name,
             Description = input.Description,
             Category = input.Category,
             Brand = input.Brand,
@@ -30,8 +29,8 @@ public class ProductsController : ControllerBase
             Stock = input.Stock,
         };
 
-        await _elasticService.IndexAsync(product, Constants.ProductsIndex);
+        var result = await _productService.IndexAsync(product, product.Id);
 
-        return Ok();
+        return result ? Created() : StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

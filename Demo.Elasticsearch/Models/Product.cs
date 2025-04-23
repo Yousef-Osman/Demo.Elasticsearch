@@ -1,6 +1,6 @@
 ﻿namespace Demo.Elasticsearch.Models;
 
-public class Product
+public class Product: BaseDocument
 {
     public string Id { get; set; }
     public string Name { get; set; }

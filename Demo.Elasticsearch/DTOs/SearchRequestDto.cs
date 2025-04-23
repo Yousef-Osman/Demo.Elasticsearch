@@ -6,5 +6,6 @@ public class SearchRequestDto
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
     public string SortField { get; set; }
-    public string SortOrder { get; set; } = "asc";
+    public bool SortAsc { get; set; } = false;
+    public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 }

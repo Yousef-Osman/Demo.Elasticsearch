@@ -2,6 +2,6 @@
 
 namespace Demo.Elasticsearch.Services.Interfaces;
 
-public interface IProductService: IElasticService<Product>
+public interface IProductService: IElasticsearchService<Product>, ISearchService<Product>
 {
 }

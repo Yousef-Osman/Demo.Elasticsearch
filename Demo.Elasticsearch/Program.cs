@@ -1,6 +1,7 @@
 using Demo.Elasticsearch.Configuration;
 using Demo.Elasticsearch.HostedServices;
 using Demo.Elasticsearch.Services;
+using Demo.Elasticsearch.Services.Interfaces;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
 using Microsoft.Extensions.Options;
@@ -25,8 +26,9 @@ builder.Services.AddSingleton(sp =>
     return new ElasticsearchClient(settings);
 });
 
-builder.Services.AddScoped(typeof(IElasticService<>), typeof(ElasticService<>));
 builder.Services.AddHostedService<ElasticsearchIndexInitializer>();
+builder.Services.AddScoped(typeof(IElasticsearchService<>), typeof(ElasticsearchService<>));
+builder.Services.AddScoped<IProductService, ProductService>();
 
 
 var app = builder.Build();

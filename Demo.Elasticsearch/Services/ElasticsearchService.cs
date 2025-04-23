@@ -1,14 +1,15 @@
-﻿using Elastic.Clients.Elasticsearch;
+﻿using Demo.Elasticsearch.Services.Interfaces;
+using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Core.Bulk;
 
 namespace Demo.Elasticsearch.Services;
 
-public class ElasticService<T> : IElasticService<T> where T : class
+public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 {
     protected readonly ElasticsearchClient _client;
     protected readonly string _indexName;
 
-    public ElasticService(ElasticsearchClient client, string indexName)
+    public ElasticsearchService(ElasticsearchClient client, string indexName)
     {
         _client = client;
         _indexName = indexName;

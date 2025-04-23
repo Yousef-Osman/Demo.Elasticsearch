@@ -1,6 +1,6 @@
-﻿namespace Demo.Elasticsearch.Services;
+﻿namespace Demo.Elasticsearch.Services.Interfaces;
 
-public interface IElasticService<T>
+public interface IElasticsearchService<T>
 {
     Task<T> GetByIdAsync(string id);
 

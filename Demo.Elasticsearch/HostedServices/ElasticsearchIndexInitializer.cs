@@ -16,6 +16,8 @@ public class ElasticsearchIndexInitializer : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await CreateIndexIfNotExistAsync<Product>(Constants.IndexNames.Products, cancellationToken);
+        await CreateIndexIfNotExistAsync<Category>(Constants.IndexNames.Categories, cancellationToken);
+        await CreateIndexIfNotExistAsync<Brand>(Constants.IndexNames.Brands, cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
