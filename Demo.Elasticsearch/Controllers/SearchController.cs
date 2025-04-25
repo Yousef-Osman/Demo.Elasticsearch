@@ -1,5 +1,4 @@
-﻿using Demo.Elasticsearch.Common;
-using Demo.Elasticsearch.DTOs;
+﻿using Demo.Elasticsearch.DTOs;
 using Demo.Elasticsearch.Models;
 using Demo.Elasticsearch.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +16,8 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet("Products")]
+    [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> SearchProducts([FromQuery] SearchRequestDto request)
     {
         SearchResult<Product> result;

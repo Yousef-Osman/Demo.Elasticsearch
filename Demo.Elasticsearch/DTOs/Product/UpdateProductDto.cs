@@ -1,6 +1,6 @@
-﻿namespace Demo.Elasticsearch.DTOs;
+﻿namespace Demo.Elasticsearch.DTOs.Product;
 
-public class CreateProductDto
+public class UpdateProductDto
 {
     public string Id { get; set; }
     public string Name { get; set; }

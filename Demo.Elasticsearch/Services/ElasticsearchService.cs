@@ -1,6 +1,7 @@
 ﻿using Demo.Elasticsearch.Services.Interfaces;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Core.Bulk;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 
 namespace Demo.Elasticsearch.Services;
 
@@ -15,32 +16,36 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
         _indexName = indexName;
     }
 
-    public async Task<T> GetByIdAsync(string id)
+    public virtual async Task<T> GetByIdAsync(string id)
     {
         var response = await _client.GetAsync<T>(id, g => g.Index(_indexName));
         return response.IsValidResponse ? response.Source : null;
     }
 
-    public async Task<List<T>> GetAllAsync(int from = 0, int size = 10)
+    public virtual async Task<List<T>> GetAllAsync(int from, int size)
     {
-        var response = await _client.SearchAsync<T>(s => s
-            .Index(_indexName)
-            .From(from)
-            .Size(size));
+        var searchRequest = new SearchRequest<T>(_indexName)
+        {
+            From = from,
+            Size = size,
+            Query = new MatchAllQuery(),
+        };
+
+        var response = await _client.SearchAsync<T>(searchRequest);
 
         //whithout validation check, it might contain incomplete results
         return response.IsValidResponse ? response.Documents.ToList() : new List<T>();
     }
 
-    public async Task<bool> IndexAsync(T document, string id)
+    public virtual async Task<bool> IndexAsync(T document, string id)
     {
         var response = await _client.IndexAsync(document, idx => idx.Index(_indexName).Id(id));
         return response.IsValidResponse;
     }
 
-    public async Task<bool> BulkIndexAsync(IEnumerable<(T document, string id)> documents)
+    public virtual async Task<bool> BulkIndexAsync(IEnumerable<(T document, string id)> documents)
     {
-        var bulkRequest = new BulkRequest(_indexName);
+        var bulkRequest = new BulkRequest(_indexName) { Operations  = [] };
 
         foreach (var (document, id) in documents)
         {
@@ -51,15 +56,15 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
         return response.IsValidResponse && !response.Errors;
     }
 
-    public async Task<bool> UpdateAsync(T document, string id)
+    public virtual async Task<bool> UpdateAsync(T document, string id)
     {
         var response = await _client.UpdateAsync<T, T>(id, u => u.Index(_indexName).Doc(document));
         return response.IsValidResponse;
     }
 
-    public async Task<bool> BulkUpdateAsync(IEnumerable<(T document, string id)> documents)
+    public virtual async Task<bool> BulkUpdateAsync(IEnumerable<(T document, string id)> documents)
     {
-        var bulkRequest = new BulkRequest(_indexName);
+        var bulkRequest = new BulkRequest(_indexName) { Operations = [] };
 
         foreach (var (document, id) in documents)
         {
@@ -73,15 +78,15 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
         return response.IsValidResponse && !response.Errors;
     }
 
-    public async Task<bool> DeleteAsync(string id)
+    public virtual async Task<bool> DeleteAsync(string id)
     {
         var response = await _client.DeleteAsync<T>(id, d => d.Index(_indexName));
         return response.IsValidResponse;
     }
 
-    public async Task<bool> BulkDeleteAsync(IEnumerable<string> ids)
+    public virtual async Task<bool> BulkDeleteAsync(IEnumerable<string> ids)
     {
-        var bulkRequest = new BulkRequest(_indexName);
+        var bulkRequest = new BulkRequest(_indexName) { Operations = [] };
 
         foreach (var id in ids)
         {

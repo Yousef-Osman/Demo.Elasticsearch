@@ -4,7 +4,7 @@ public interface IElasticsearchService<T>
 {
     Task<T> GetByIdAsync(string id);
 
-    Task<List<T>> GetAllAsync(int from = 0, int size = 10);
+    Task<List<T>> GetAllAsync(int from, int size);
 
     Task<bool> IndexAsync(T document, string id);
 
