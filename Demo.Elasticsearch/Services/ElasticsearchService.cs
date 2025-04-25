@@ -86,11 +86,11 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
     public virtual async Task<bool> BulkDeleteAsync(IEnumerable<string> ids)
     {
-        var bulkRequest = new BulkRequest(_indexName) { Operations = [] };
+        var bulkRequest = new BulkRequest() { Operations = [] };
 
         foreach (var id in ids)
         {
-            bulkRequest.Operations.Add(new BulkDeleteOperation<T>(id));
+            bulkRequest.Operations.Add(new BulkDeleteOperation<T>(id) { Index = _indexName });
         }
 
         var response = await _client.BulkAsync(bulkRequest);
