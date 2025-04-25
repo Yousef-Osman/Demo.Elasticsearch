@@ -1,0 +1,182 @@
+[
+  {
+    "Id": "1",
+    "Name": "iPhone 15 Pro",
+    "Description": "Latest Apple smartphone with A17 chip and titanium design.",
+    "Price": 999.99,
+    "Stock": 50,
+    "Category": "Smartphones",
+    "Brand": "Apple"
+  },
+  {
+    "Id": "2",
+    "Name": "Samsung Galaxy S24",
+    "Description": "High-end Android phone with excellent camera and display.",
+    "Price": 899.99,
+    "Stock": 70,
+    "Category": "Smartphones",
+    "Brand": "Samsung"
+  },
+  {
+    "Id": "3",
+    "Name": "Tesla Model 3",
+    "Description": "Electric sedan with autopilot and long range.",
+    "Price": 39999.99,
+    "Stock": 10,
+    "Category": "Electric Cars",
+    "Brand": "Tesla"
+  },
+  {
+    "Id": "4",
+    "Name": "MacBook Pro 16\"",
+    "Description": "Apple laptop with M2 Max chip, great for performance tasks.",
+    "Price": 2999.99,
+    "Stock": 15,
+    "Category": "Laptops",
+    "Brand": "Apple"
+  },
+  {
+    "Id": "5",
+    "Name": "Dell XPS 13",
+    "Description": "Sleek ultrabook with great battery life and display.",
+    "Price": 1199.99,
+    "Stock": 25,
+    "Category": "Laptops",
+    "Brand": "Dell"
+  },
+  {
+    "Id": "6",
+    "Name": "PlayStation 5",
+    "Description": "Next-gen gaming console with immersive gameplay.",
+    "Price": 499.99,
+    "Stock": 40,
+    "Category": "Gaming",
+    "Brand": "Sony"
+  },
+  {
+    "Id": "7",
+    "Name": "Xbox Series X",
+    "Description": "Microsoft’s powerful console for next-gen gaming.",
+    "Price": 499.99,
+    "Stock": 35,
+    "Category": "Gaming",
+    "Brand": "Microsoft"
+  },
+  {
+    "Id": "8",
+    "Name": "GoPro Hero12",
+    "Description": "Action camera for capturing adventures in 5K.",
+    "Price": 399.99,
+    "Stock": 20,
+    "Category": "Cameras",
+    "Brand": "GoPro"
+  },
+  {
+    "Id": "9",
+    "Name": "Canon EOS R5",
+    "Description": "High-end mirrorless camera with 8K video support.",
+    "Price": 3499.99,
+    "Stock": 8,
+    "Category": "Cameras",
+    "Brand": "Canon"
+  },
+  {
+    "Id": "10",
+    "Name": "NVIDIA RTX 4090",
+    "Description": "Top-tier graphics card for ultra gaming and AI workloads.",
+    "Price": 1599.99,
+    "Stock": 12,
+    "Category": "PC Components",
+    "Brand": "NVIDIA"
+  },
+  {
+    "Id": "11",
+    "Name": "AMD Ryzen 9 7950X",
+    "Description": "High-performance desktop CPU for creators and gamers.",
+    "Price": 699.99,
+    "Stock": 18,
+    "Category": "PC Components",
+    "Brand": "AMD"
+  },
+  {
+    "Id": "12",
+    "Name": "Ford Mustang GT",
+    "Description": "Classic American muscle car with V8 engine.",
+    "Price": 55999.99,
+    "Stock": 7,
+    "Category": "Sports Cars",
+    "Brand": "Ford"
+  },
+  {
+    "Id": "13",
+    "Name": "BMW M3",
+    "Description": "Luxury performance sedan with excellent handling.",
+    "Price": 69999.99,
+    "Stock": 6,
+    "Category": "Sports Cars",
+    "Brand": "BMW"
+  },
+  {
+    "Id": "14",
+    "Name": "ASUS ROG Zephyrus",
+    "Description": "Gaming laptop with RTX graphics and high refresh rate display.",
+    "Price": 1899.99,
+    "Stock": 14,
+    "Category": "Laptops",
+    "Brand": "ASUS"
+  },
+  {
+    "Id": "15",
+    "Name": "iPad Pro 12.9\"",
+    "Description": "Powerful tablet with M2 chip and Apple Pencil support.",
+    "Price": 1099.99,
+    "Stock": 30,
+    "Category": "Tablets",
+    "Brand": "Apple"
+  },
+  {
+    "Id": "16",
+    "Name": "Microsoft Surface Pro 9",
+    "Description": "2-in-1 detachable laptop with Windows 11.",
+    "Price": 1299.99,
+    "Stock": 22,
+    "Category": "Tablets",
+    "Brand": "Microsoft"
+  },
+  {
+    "Id": "17",
+    "Name": "Nissan Leaf",
+    "Description": "Affordable electric vehicle with good range.",
+    "Price": 28999.99,
+    "Stock": 12,
+    "Category": "Electric Cars",
+    "Brand": "Nissan"
+  },
+  {
+    "Id": "18",
+    "Name": "DJI Mavic 3",
+    "Description": "Professional drone with 4/3 CMOS camera and long flight time.",
+    "Price": 2199.99,
+    "Stock": 9,
+    "Category": "Drones",
+    "Brand": "DJI"
+  },
+  {
+    "Id": "19",
+    "Name": "Logitech MX Master 3S",
+    "Description": "Ergonomic mouse with customizable buttons.",
+    "Price": 99.99,
+    "Stock": 60,
+    "Category": "Accessories",
+    "Brand": "Logitech"
+  },
+  {
+    "Id": "20",
+    "Name": "Sony WH-1000XM5",
+    "Description": "Top-tier noise cancelling headphones.",
+    "Price": 399.99,
+    "Stock": 28,
+    "Category": "Audio",
+    "Brand": "Sony"
+  }
+]
