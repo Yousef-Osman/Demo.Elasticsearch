@@ -1,10 +1,9 @@
 using Demo.Elasticsearch.Configuration;
+using Demo.Elasticsearch.Extensions;
 using Demo.Elasticsearch.HostedServices;
 using Demo.Elasticsearch.Services;
 using Demo.Elasticsearch.Services.Interfaces;
-using Elastic.Clients.Elasticsearch;
-using Elastic.Transport;
-using Microsoft.Extensions.Options;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,22 +13,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<ElasticSettings>(builder.Configuration.GetSection("Elasticsearch"));
 
-// Register ElasticsearchClient as Singleton
-builder.Services.AddSingleton(sp =>
-{
-    var config = sp.GetRequiredService<IOptions<ElasticSettings>>().Value;
-
-    var settings = new ElasticsearchClientSettings(new Uri(config.Url))
-        .Authentication(new BasicAuthentication(config.Username, config.Password))
-        .EnableDebugMode();
-
-    return new ElasticsearchClient(settings);
-});
+builder.Services.AddElasticsearch();
+builder.AddSerilog();
 
 builder.Services.AddHostedService<ElasticsearchIndexInitializer>();
 builder.Services.AddScoped(typeof(IElasticsearchService<>), typeof(ElasticsearchService<>));
 builder.Services.AddScoped<IProductService, ProductService>();
 
+Log.Information("Starting web host");
 
 var app = builder.Build();
 

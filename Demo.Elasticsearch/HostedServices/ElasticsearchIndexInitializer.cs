@@ -7,17 +7,25 @@ namespace Demo.Elasticsearch.HostedServices;
 public class ElasticsearchIndexInitializer : IHostedService
 {
     private readonly ElasticsearchClient _elastic;
+    private readonly ILogger<ElasticsearchIndexInitializer> _logger;
 
-    public ElasticsearchIndexInitializer(ElasticsearchClient elastic)
+    public ElasticsearchIndexInitializer(ElasticsearchClient elastic,
+        ILogger<ElasticsearchIndexInitializer> logger)
     {
         _elastic = elastic;
+        _logger = logger;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await CreateIndexIfNotExistAsync<Product>(Constants.IndexNames.Products, cancellationToken);
-        await CreateIndexIfNotExistAsync<Category>(Constants.IndexNames.Categories, cancellationToken);
-        await CreateIndexIfNotExistAsync<Brand>(Constants.IndexNames.Brands, cancellationToken);
+        var tasks = new List<Task>
+        {
+            CreateIndexIfNotExistAsync<Product>(Constants.IndexNames.Products, cancellationToken),
+            CreateIndexIfNotExistAsync<Category>(Constants.IndexNames.Categories, cancellationToken),
+            CreateIndexIfNotExistAsync<Brand>(Constants.IndexNames.Brands, cancellationToken),
+        };
+
+        await Task.WhenAll(tasks);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -32,9 +40,18 @@ public class ElasticsearchIndexInitializer : IHostedService
         if (exists.Exists)
             return;
 
-        var create = await _elastic.Indices.CreateAsync(indexName, ct);
+        var create = await _elastic.Indices.CreateAsync(indexName, c => c
+            .Settings(s => s
+                .NumberOfShards(2)
+                .NumberOfReplicas(1)
+            ), ct);
 
         if (!create.IsValidResponse)
-            throw new Exception($"Failed to create index {indexName}");
+        {
+            _logger.LogError("Failed to create index '{IndexName}'. Error: {Error}", indexName, create.ElasticsearchServerError?.ToString());
+            throw new InvalidOperationException($"Failed to create index '{indexName}'. Server error: {create.ElasticsearchServerError?.Error?.Reason}");
+        }
+
+        _logger.LogInformation("Successfully created index '{IndexName}'", indexName);
     }
 }
