@@ -1,6 +1,7 @@
 using Demo.Elasticsearch.Configuration;
 using Demo.Elasticsearch.Extensions;
 using Demo.Elasticsearch.HostedServices;
+using Demo.Elasticsearch.Middlewares;
 using Demo.Elasticsearch.Services;
 using Demo.Elasticsearch.Services.Interfaces;
 using Serilog;
@@ -20,6 +21,9 @@ builder.Services.AddHostedService<ElasticsearchIndexInitializer>();
 builder.Services.AddScoped(typeof(IElasticsearchService<>), typeof(ElasticsearchService<>));
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 Log.Information("Starting web host");
 
 var app = builder.Build();
@@ -31,6 +35,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler();
 
 app.UseAuthorization();
 
