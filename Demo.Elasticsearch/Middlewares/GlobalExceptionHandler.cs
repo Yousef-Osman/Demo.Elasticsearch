@@ -20,13 +20,34 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         var problemDetails = new ProblemDetails
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "An unexpected error occurred!",
-            Detail = _env.IsDevelopment() ? exception.Message : null,
-            Instance = httpContext.Request.Path
+            Instance = httpContext.Request.Path,
+            Detail = _env.IsDevelopment() ? exception.Message : null
         };
 
-        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        switch (exception)
+        {
+            case ArgumentException:
+                problemDetails.Title = "Bad Request";
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                break;
+
+            case KeyNotFoundException:
+                problemDetails.Title = "Resource Not Found";
+                problemDetails.Status = StatusCodes.Status404NotFound;
+                break;
+
+            case UnauthorizedAccessException:
+                problemDetails.Title = "Unauthorized";
+                problemDetails.Status = StatusCodes.Status401Unauthorized;
+                break;
+
+            default:
+                problemDetails.Title = "Internal Server Error";
+                problemDetails.Status = StatusCodes.Status500InternalServerError;
+                break;
+        }
+
+        httpContext.Response.StatusCode = problemDetails.Status.Value;
         httpContext.Response.ContentType = "application/problem+json";
 
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
