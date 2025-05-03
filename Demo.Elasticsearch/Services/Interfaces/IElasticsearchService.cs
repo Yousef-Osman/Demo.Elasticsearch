@@ -1,20 +1,22 @@
-﻿namespace Demo.Elasticsearch.Services.Interfaces;
+﻿using Demo.Elasticsearch.Common;
+
+namespace Demo.Elasticsearch.Services.Interfaces;
 
 public interface IElasticsearchService<T>
 {
-    Task<T> GetByIdAsync(string id);
+    Task<Result<T>> GetByIdAsync(string id);
 
-    Task<List<T>> GetAllAsync(int from, int size);
+    Task<Result<List<T>>> GetAllAsync(int from, int size);
 
-    Task<bool> IndexAsync(T document, string id);
+    Task<Result> IndexAsync(T document, string id);
 
-    Task<bool> BulkIndexAsync(IEnumerable<(T document, string id)> documents);
+    Task<Result> BulkIndexAsync(IEnumerable<(T document, string id)> documents);
 
-    Task<bool> UpdateAsync(T document, string id);
+    Task<Result> UpdateAsync(T document, string id);
 
-    Task<bool> BulkUpdateAsync(IEnumerable<(T document, string id)> documents);
+    Task<Result> BulkUpdateAsync(IEnumerable<(T document, string id)> documents);
 
-    Task<bool> DeleteAsync(string id);
+    Task<Result> DeleteAsync(string id);
 
-    Task<bool> BulkDeleteAsync(IEnumerable<string> ids);
+    Task<Result> BulkDeleteAsync(IEnumerable<string> ids);
 }
