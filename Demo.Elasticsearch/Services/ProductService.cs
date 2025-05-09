@@ -1,4 +1,5 @@
 ﻿using Demo.Elasticsearch.Common;
+using Demo.Elasticsearch.Common.Errors;
 using Demo.Elasticsearch.DTOs;
 using Demo.Elasticsearch.Models;
 using Demo.Elasticsearch.Services.Interfaces;
@@ -8,9 +9,15 @@ namespace Demo.Elasticsearch.Services;
 
 public class ProductService : ElasticsearchService<Product>, IProductService
 {
-    public ProductService(ElasticsearchClient client, ILogger<ProductService> logger) : base(client, Constants.IndexNames.Products, logger) { }
+    private readonly ILogger<ProductService> _logger;
 
-    public async Task<SearchResult<Product>> SearchAsync(SearchRequestDto request)
+    public ProductService(ElasticsearchClient client, ILogger<ProductService> logger) 
+        : base(client, Constants.IndexNames.Products, logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task<Result<SearchResult<Product>>> SearchAsync(SearchRequestDto request)
     {
         var descriptor = new SearchRequestDescriptor<Product>()
             .Indices(Constants.IndexNames.Products)
@@ -33,7 +40,7 @@ public class ProductService : ElasticsearchService<Product>, IProductService
         if (!string.IsNullOrWhiteSpace(request.SortField))
         {
             if (!allowedSortFields.Contains(request.SortField))
-                throw new ArgumentException($"Invalid sort field: {request.SortField}");
+                return Result<SearchResult<Product>>.Failure(ProductErrors.InvalidSortField(request.SortField));
 
             descriptor.Sort(s => s
                 .Field(new Field($"{request.SortField}.keyword"), so =>
@@ -43,14 +50,19 @@ public class ProductService : ElasticsearchService<Product>, IProductService
         var response = await _client.SearchAsync<Product>(descriptor);
 
         if (!response.IsValidResponse)
-            throw new Exception($"Elasticsearch query failed: {response.DebugInformation}");
+        {
+            _logger.LogError("Elasticsearch query failed: {debugInformation}", response.DebugInformation);
+            return Result<SearchResult<Product>>.Failure(ProductErrors.ServerError());
+        }
 
-        return new SearchResult<Product>
+        var result = new SearchResult<Product>
         {
             Items = response.Documents.ToList(),
             Total = response.Total,
             PageNumber = request.PageNumber,
             PageSize = request.PageSize
         };
+
+        return Result<SearchResult<Product>>.Success(result);
     }
 }

@@ -25,7 +25,10 @@ public class ProductsController : ControllerBase
     {
         var result = await _productService.GetByIdAsync(id);
 
-        return result.IsSuccess ? Ok(result.Value) : NotFound();
+        return result.Match<IActionResult>(
+            value => Ok(value),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpGet]
@@ -37,7 +40,10 @@ public class ProductsController : ControllerBase
         var from = (pageNumber - 1) * pageSize;
         var result = await _productService.GetAllAsync(from, pageSize);
 
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblemDetails(HttpContext);
+        return result.Match<IActionResult>(
+            value => Ok(value),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpPost]
@@ -49,9 +55,10 @@ public class ProductsController : ControllerBase
     {
         var result = await _productService.IndexAsync(product, product.Id);
 
-        return result.IsSuccess
-            ? CreatedAtAction(nameof(GetById), new { id = product.Id }, product)
-            : result.ToProblemDetails(HttpContext);
+        return result.Match<IActionResult>(
+            () => CreatedAtAction(nameof(GetById), new { id = product.Id }, product),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpPost("bulk")]
@@ -63,9 +70,10 @@ public class ProductsController : ControllerBase
         var documents = products.Select(p => (p.Adapt<Product>(), p.Id));
         var result = await _productService.BulkIndexAsync(documents);
 
-        return result.IsSuccess
-            ? Accepted()
-            : BadRequest("Failed to bulk create products");
+        return result.Match<IActionResult>(
+            () => Accepted(),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpPut("{id}")]
@@ -75,19 +83,20 @@ public class ProductsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Update(string id, UpdateProductDto input)
     {
-        var existingProduct = await _productService.GetByIdAsync(id);
+        var productResult = await _productService.GetByIdAsync(id);
 
-        if (existingProduct == null)
-            return NotFound();
+        if (!productResult.IsSuccess)
+            return productResult.ToProblemDetails(HttpContext);
 
         var product = input.Adapt<Product>();
         product.UpdatedAt = DateTime.UtcNow;
 
         var result = await _productService.UpdateAsync(product, id);
 
-        return result.IsSuccess
-            ? NoContent()
-            : BadRequest("Failed to update product");
+        return result.Match<IActionResult>(
+            () => NoContent(),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpPut("bulk")]
@@ -104,9 +113,10 @@ public class ProductsController : ControllerBase
 
         var result = await _productService.BulkUpdateAsync(documents);
 
-        return result.IsSuccess
-            ? NoContent()
-            : BadRequest("Failed to bulk update products");
+        return result.Match<IActionResult>(
+            () => NoContent(),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpDelete("{id}")]
@@ -115,16 +125,17 @@ public class ProductsController : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Delete(string id)
     {
-        var existingProduct = await _productService.GetByIdAsync(id);
+        var productResult = await _productService.GetByIdAsync(id);
 
-        if (existingProduct == null)
-            return NotFound();
+        if (!productResult.IsSuccess)
+            return productResult.ToProblemDetails(HttpContext);
 
         var result = await _productService.DeleteAsync(id);
 
-        return result.IsSuccess
-            ? NoContent()
-            : BadRequest("Failed to delete product");
+        return result.Match<IActionResult>(
+            () => NoContent(),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 
     [HttpDelete("bulk")]
@@ -135,8 +146,9 @@ public class ProductsController : ControllerBase
     {
         var result = await _productService.BulkDeleteAsync(ids);
 
-        return result.IsSuccess
-            ? NoContent()
-            : BadRequest("Failed to bulk delete products");
+        return result.Match<IActionResult>(
+            () => NoContent(),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 }

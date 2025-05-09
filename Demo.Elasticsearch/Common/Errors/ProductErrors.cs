@@ -1,4 +1,6 @@
-﻿namespace Demo.Elasticsearch.Common.Errors;
+﻿using Elastic.Clients.Elasticsearch.Requests;
+
+namespace Demo.Elasticsearch.Common.Errors;
 
 public static class ProductErrors
 {
@@ -7,6 +9,9 @@ public static class ProductErrors
 
     public static Error ValidationError(string message) =>
         new Error("Product.Validation", message, ErrorType.Validation);
+    
+    public static Error InvalidSortField(string sortField) =>
+        new Error("Product.Validation", $"Invalid sort field: {sortField}", ErrorType.Validation);
 
     public static Error Conflict(string message) =>
         new Error("Product.Conflict", message, ErrorType.Conflict);

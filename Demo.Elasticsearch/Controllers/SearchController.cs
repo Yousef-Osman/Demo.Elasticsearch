@@ -1,4 +1,5 @@
 ﻿using Demo.Elasticsearch.DTOs;
+using Demo.Elasticsearch.Extensions;
 using Demo.Elasticsearch.Models;
 using Demo.Elasticsearch.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -17,20 +18,15 @@ public class SearchController : ControllerBase
 
     [HttpGet("Products")]
     [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> SearchProducts([FromQuery] SearchRequestDto request)
     {
-        SearchResult<Product> result;
+        var result = await _productSearchService.SearchAsync(request);
 
-        try
-        {
-            result = await _productSearchService.SearchAsync(request);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Error = ex.Message });
-        }
-
-        return Ok(result);
+        return result.Match<IActionResult>(
+            value => Ok(value),
+            _ => result.ToProblemDetails(HttpContext)
+        );
     }
 }
