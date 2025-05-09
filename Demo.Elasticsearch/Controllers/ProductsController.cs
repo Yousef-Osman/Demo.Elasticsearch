@@ -71,7 +71,7 @@ public class ProductsController : ControllerBase
         var result = await _productService.BulkIndexAsync(documents);
 
         return result.Match<IActionResult>(
-            () => Accepted(),
+            () => Created(),
             _ => result.ToProblemDetails(HttpContext)
         );
     }

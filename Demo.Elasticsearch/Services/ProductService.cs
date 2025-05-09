@@ -11,8 +11,8 @@ public class ProductService : ElasticsearchService<Product>, IProductService
 {
     private readonly ILogger<ProductService> _logger;
 
-    public ProductService(ElasticsearchClient client, ILogger<ProductService> logger) 
-        : base(client, Constants.IndexNames.Products, logger)
+    public ProductService(ElasticsearchClient client, ILogger<ProductService> logger, ILoggerFactory loggerFactory)
+        : base(client, Constants.IndexNames.Products, loggerFactory.CreateLogger<ElasticsearchService<Product>>())
     {
         _logger = logger;
     }

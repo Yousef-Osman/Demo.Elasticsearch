@@ -181,7 +181,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
     {
         var response = await _client.DeleteAsync<T>(id, d => d.Index(_indexName));
 
-        if (response.IsValidResponse)
+        if (!response.IsValidResponse)
         {
             var errorMessage = response.ApiCallDetails.OriginalException?.Message;
             var statusCode = response.ApiCallDetails.HttpStatusCode;

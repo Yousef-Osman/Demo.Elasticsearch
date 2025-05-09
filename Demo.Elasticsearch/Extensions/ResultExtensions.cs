@@ -17,7 +17,7 @@ public static class ResultExtensions
             Title = GetErrorTitle(result.Error.Type),
             Detail = result.Error.Message,
             Type = GetErrorTypeUri(result.Error.Type),
-            Instance = httpContext.Request?.Path,
+            Instance = $"{httpContext.Request?.Method} {httpContext.Request?.Path}",
             Extensions = { ["errorCode"] = result.Error.Code },
         };
 
