@@ -8,7 +8,7 @@ namespace Demo.Elasticsearch.Services;
 
 public class ProductService : ElasticsearchService<Product>, IProductService
 {
-    public ProductService(ElasticsearchClient client) : base(client, Constants.IndexNames.Products) { }
+    public ProductService(ElasticsearchClient client, ILogger<ProductService> logger) : base(client, Constants.IndexNames.Products, logger) { }
 
     public async Task<SearchResult<Product>> SearchAsync(SearchRequestDto request)
     {

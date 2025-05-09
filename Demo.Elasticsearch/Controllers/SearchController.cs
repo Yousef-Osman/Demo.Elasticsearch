@@ -17,7 +17,7 @@ public class SearchController : ControllerBase
 
     [HttpGet("Products")]
     [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> SearchProducts([FromQuery] SearchRequestDto request)
     {
         SearchResult<Product> result;

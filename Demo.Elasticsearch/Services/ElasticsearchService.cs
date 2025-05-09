@@ -1,4 +1,5 @@
 ﻿using Demo.Elasticsearch.Common;
+using Demo.Elasticsearch.Common.Errors;
 using Demo.Elasticsearch.Services.Interfaces;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.Core.Bulk;
@@ -34,13 +35,13 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Error getting document with ID {Id}. Status code: {StatusCode}, Error: {Error}", id, statusCode, errorMessage);
 
             if (statusCode == StatusCodes.Status404NotFound)
-                return Result<T>.Failure(Error.NotFound($"Document with ID {id} was not found"));
+                return Result<T>.Failure(DocumentErrors.NotFound());
 
-            return Result<T>.Failure(Error.ServerError());
+            return Result<T>.Failure(DocumentErrors.ServerError());
         }
 
         if (!response.Found)
-            return Result<T>.Failure(Error.NotFound($"Document with ID {id} was not found"));
+            return Result<T>.Failure(DocumentErrors.NotFound());
 
         return Result<T>.Success(response.Source);
     }
@@ -63,7 +64,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
             _logger.LogError("Error getting documents. Status code: {StatusCode}, Error: {Error}", statusCode, errorMessage);
 
-            return Result<List<T>>.Failure(Error.ServerError());
+            return Result<List<T>>.Failure(DocumentErrors.ServerError());
         }
 
         return Result<List<T>>.Success(response.Documents.ToList());
@@ -80,7 +81,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
             _logger.LogError("Error indexing document with ID {Id}. Status code: {StatusCode}, Error: {Error}", id, statusCode, errorMessage);
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
@@ -104,7 +105,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
             _logger.LogError("Error bulk indexing documents. Status code: {StatusCode}, Error: {Error}", statusCode, errorMessage);
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         if (response.Errors)
@@ -112,7 +113,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Bulk indexing had errors: {ErrorItems}",
                         string.Join(", ", response.ItemsWithErrors.Select(i => i.Error.ToString())));
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
@@ -133,9 +134,9 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Error updating document with ID {Id}. Status code: {StatusCode}, Error: {Error}", id, statusCode, errorMessage);
 
             if (statusCode == StatusCodes.Status404NotFound)
-                return Result.Failure(Error.NotFound($"Document with ID {id} was not found"));
+                return Result.Failure(DocumentErrors.NotFound());
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
@@ -162,7 +163,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
             _logger.LogError("Error bulk updating documents. Status code: {StatusCode}, Error: {Error}", statusCode, errorMessage);
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         if (response.Errors)
@@ -170,7 +171,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Bulk update had errors: {ErrorItems}",
                         string.Join(", ", response.ItemsWithErrors.Select(i => i.Error.ToString())));
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
@@ -188,9 +189,9 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Error deleting document with ID {Id}. Status code: {StatusCode}, Error: {Error}", id, statusCode, errorMessage);
 
             if (statusCode == StatusCodes.Status404NotFound)
-                return Result.Failure(Error.NotFound($"Document with ID {id} was not found"));
+                return Result.Failure(DocumentErrors.NotFound());
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
@@ -214,7 +215,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
 
             _logger.LogError("Error bulk deleting documents. Status code: {StatusCode}, Error: {Error}", statusCode, errorMessage);
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         if (response.Errors)
@@ -222,7 +223,7 @@ public class ElasticsearchService<T> : IElasticsearchService<T> where T : class
             _logger.LogError("Bulk delete had errors: {ErrorItems}",
                         string.Join(", ", response.ItemsWithErrors.Select(i => i.Error.ToString())));
 
-            return Result.Failure(Error.ServerError());
+            return Result.Failure(DocumentErrors.ServerError());
         }
 
         return Result.Success();
